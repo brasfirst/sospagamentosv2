@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Parcelamento</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://rawgit.com/vuejs-tips/v-money/master/dist/v-money.js"></script>
+</head>
+<body>
+
+    <style>
+        #calc {
+            text-align: center;
+            margin: auto;
+            display: flex;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #555;
+            padding: 30px ;
+        }
+
+        #calc * {
+            color: #555;
+        }
+
+        #calc p {
+            padding: 0;
+            margin: 0 0 15px;
+        }
+        #calc .boxCalc {
+            display: inline-flex;
+            width: 100%;
+            border-radius: 4px;
+            justify-content: space-between;
+            padding: 20px;
+            margin: auto;
+            box-shadow: 0 0 0 1px rgba(12,15,20,0.07), 0 0 1px 0 rgba(12,15,20,0.07), 0 2px 2px 0 rgba(12,15,20,0.07);
+            padding: 16px 24px;
+            padding-top: 24px;
+            flex-wrap: wrap;
+            max-width: 760px;
+            justify-content: center;
+        }
+
+        #calc select#numeroParcela {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            background-color: #FFFFFF;
+            outline: none;
+            border: 0;
+            border-radius: 8px;
+            box-shadow: none;
+            color: #212933;
+            margin: 0;
+            padding-top: calc(8px + 1px);
+            padding-right: 32px;
+            padding-bottom: calc(8px + 1px);
+            padding-left: 12px;
+            position: relative;
+            width: 100%;
+            z-index: 20;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            -webkit-transition: box-shadow 120ms ease-in-out, padding 120ms ease-in-out;
+            transition: box-shadow 120ms ease-in-out, padding 120ms ease-in-out;
+            font-size: 16px;
+            line-height: 24px;
+            box-shadow: 0 0 0 1px #f2f2f2;
+        }
+
+        #calc .boxCalc div:nth-child(1) {
+            flex-direction: column;
+            display: inline-flex;
+            justify-content: space-around;
+            overflow: unset;
+        }
+
+        #calc .boxCalc div {
+            width: 50%;
+            min-width: 250px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            overflow-y: unset;
+        }
+
+        #calc .containerValor {
+            position: relative;
+            display: block;
+        } 
+
+        #calc .containerValor p {
+            position: relative;
+            display: block;
+            margin: 0;
+            text-align: left;
+            font-size: 11px;
+            color: #544e4e;
+            padding: 5px 0;
+        }
+
+        #calc .css-1hjwnhk-simple-currency-input__symbol-input__prefix {
+            line-height: 16px;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-align-items: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            position: absolute;
+            top: 14px;
+            left: 1px;
+            pointer-events: none;
+            color: #5C656F;
+            padding: 12px;
+            height: 40px;
+            width: 44px;
+        }
+
+        #calc #valor {
+            -webkit-appearance: none;
+            background-color: #FFFFFF;
+            border: none;
+            outline: 0;
+            border-radius: 8px;
+            -webkit-transition: box-shadow 120ms ease-in-out, padding 120ms ease-in-out;
+            transition: box-shadow 120ms ease-in-out, padding 120ms ease-in-out;
+            font-size: 16px;
+            line-height: 24px;
+            text-align: right;
+            padding-left: 0;
+            box-shadow: 0 0 0 1px #f2f2f2;
+            width: 90%;
+            padding: 10px 5%;
+        }
+
+        #calc .totalParcelamento {
+            font-size: 40px;
+            font-weight: bolder;
+        }
+    </style>
+    <div id="calc">
+        <div class="boxCalc">
+            <div>
+                <div class="containerValor">
+                    <p>Valor de Empréstimo  / Boleto(s) a Pagar:</p>
+                    <span class="css-1hjwnhk-simple-currency-input__symbol-input__prefix">R$</span>
+                    <money v-model="valor" id="valor"  v-bind="money" placeholder="0,00" />
+                </div>
+                <div class="containerValor">
+                    <p>Escolha as parcelas:</p>
+                    <select v-model="numeroParcela" id="numeroParcela" name="numeroParcela">
+                        <option value="1">1 parcela</option>
+                        <option value="2">2 parcelas</option>
+                        <option value="3">3 parcelas</option>
+                        <option value="4">4 parcelas</option>
+                        <option value="5">5 parcelas</option>
+                        <option value="6">6 parcelas</option>
+                        <option value="7">7 parcelas</option>
+                        <option value="8">8 parcelas</option>
+                        <option value="9">9 parcelas</option>
+                        <option value="10">10 parcelas</option>
+                        <option value="11">11 parcelas</option>
+                        <option value="12">12 parcelas</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <p><b>VOCÊ PAGA:</b></p>
+                <p><span class="totalParcelamento">{{totalParcelamento.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</span><br>
+                Valor de entrada<br> A vista
+                    <span v-if="taxaTotal">{{ taxaTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</span>
+                    <span v-else>R$ 0,00</span>
+                    </p>
+                    <p>{{currency(2500)}}</p>
+                    
+                    <p>mais {{numeroParcela}}x de {{ parcelamento.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }} no cartão
+                </p>
+            </div>
+        </div>
+    </div>
+      
+    <script>
+      new Vue({
+        el: "#calc",
+        data: {
+          valor: 0,
+          money: {
+            decimal: ',',
+            thousands: '.',
+            prefix: '',
+            suffix: '',
+            precision: 2,
+            masked: false
+        },
+          texto: '',
+          taxa: 0.00,
+          juros: [
+          0.077,
+          0.11380000000000001,
+          0.1311,
+          0.1489,
+          0.1674,
+          0.1864,
+          0.2061,
+          0.2265,
+          0.2476,
+          0.2696,
+          0.2923,
+          0.3159
+          ],
+          numeroParcela: 1,
+          totalParcelamento: 0.00,
+          mensagem: "Hello World"
+        },
+        methods: {
+            currency(value) {
+                var formatter = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+
+                // These options are needed to round to whole numbers if that's what you want.
+                //minimumFractionDigits: 2,
+                //maximumFractionDigits: 2,
+                });
+
+                formatter.format(value); /* $2,500.00 */
+            },
+            calcTax: function () {
+                switch (this.numeroParcela) {
+                    case "1":
+                        this.taxa = parseFloat(this.juros[0]);
+                        break;
+                    case "2":
+                        this.taxa = parseFloat(this.juros[1]);
+                        break;
+                    case "3":
+                        this.taxa = parseFloat(this.juros[2]);
+                        break;
+                    case "4":
+                        this.taxa = parseFloat(this.juros[3]);
+                        break;
+                    case "5":
+                        this.taxa = parseFloat(this.juros[4]);
+                        break;
+                    case "6":
+                        this.taxa = parseFloat(this.juros[5]);
+                        break;
+                    case "7":
+                        this.taxa = parseFloat(this.juros[6]);
+                        break;
+                    case "8":
+                        this.taxa = parseFloat(this.juros[7]);
+                        break;
+                    case "9":
+                        this.taxa = parseFloat(this.juros[8]);
+                        break;
+                    case "10":
+                        this.taxa = parseFloat(this.juros[9]);
+                        break;
+                    case "11":
+                        this.taxa = parseFloat(this.juros[10]);
+                        break;
+                    case "12":
+                        this.taxa = parseFloat(this.juros[11]);
+                        break;
+                    default:
+                        this.taxa = parseFloat(this.juros[0]);
+                        break;
+                }
+
+                (!this.valor) && (this.valor = 0.00) && (this.totalParcelamento = 0.00);
+                this.totalParcelamento = parseFloat(this.valor) + (parseFloat(this.valor) * parseFloat(this.taxa));
+                
+                
+            },
+        },
+        watch: {
+            numeroParcela() {
+
+                this.calcTax();
+                console.log(this.totalParcelamento)
+            },
+            valor() {
+                this.calcTax();
+                console.log(this.valor);
+                
+                
+            },
+        },
+        computed: {
+            taxaTotal() {
+                return  parseFloat(this.valor) * parseFloat(this.taxa);
+            },
+            parcelamento() {
+                return  ((parseFloat(this.totalParcelamento) - parseFloat(this.taxaTotal)) / parseFloat(this.numeroParcela));
+            },
+            total() {
+                return 10;
+            }
+        }
+      });
+    </script>
+</body>
+</html>
+
