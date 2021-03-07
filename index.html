@@ -1,25 +1,50 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Parcelamento</title>
-
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
     <script src="https://rawgit.com/vuejs-tips/v-money/master/dist/v-money.js"></script>
-</head>
-<body>
 
     <style>
+        .header {
+            text-align: center;
+            padding: 30px 0 0 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .header h1 img {
+            max-width: 100px;
+        }
+
+        .duvidas {
+            max-width: 810px;
+            margin: auto;
+        }
+
+        .duvidas p {
+            font-size: 12px;
+        }
+
+        button {
+            padding: 5px 10px;
+        }
+
         #calc {
             text-align: center;
             margin: auto;
             display: flex;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #555;
-            padding: 30px ;
-            
+            padding: 30px;
+
         }
 
         #calc * {
@@ -30,6 +55,7 @@
             padding: 0;
             margin: 0 0 15px;
         }
+
         #calc .boxCalc {
             display: inline-flex;
             width: 100%;
@@ -37,7 +63,7 @@
             justify-content: space-between;
             padding: 20px;
             margin: auto;
-            box-shadow: 0 0 0 1px rgba(12,15,20,0.07), 0 0 1px 0 rgba(12,15,20,0.07), 0 2px 2px 0 rgba(12,15,20,0.07);
+            box-shadow: 0 0 0 1px rgba(12, 15, 20, 0.07), 0 0 1px 0 rgba(12, 15, 20, 0.07), 0 2px 2px 0 rgba(12, 15, 20, 0.07);
             padding: 16px 24px;
             padding-top: 24px;
             flex-wrap: wrap;
@@ -97,7 +123,7 @@
         #calc .containerValor {
             position: relative;
             display: block;
-        } 
+        }
 
         #calc .containerValor p {
             position: relative;
@@ -148,7 +174,7 @@
             box-shadow: 0 0 0 1px #f2f2f2;
             width: 90%;
             padding: 10px 5%;
-            
+
             border: 1px solid #555;
         }
 
@@ -156,14 +182,67 @@
             font-size: 40px;
             font-weight: bolder;
         }
+
+        header,
+        footer {
+            display: none;
+        }
+
+        .btn-imprimir {
+            max-width: 800px;
+            margin: auto;
+            text-align: end;
+
+        }
+
+        @media print {
+            button {
+                display: none;
+            }
+
+            header,
+            footer {
+                display: block;
+            }
+        }
     </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="header">
+
+            <h1>
+                <img src="https://soscidadao.online/static/media/logo.7ebdbd6c.svg" alt="" />
+            </h1>
+            <small>Facilitando o seu dia a dia<br />soscidadao.net<br />(81) 9 9199-1180</small>
+
+
+        </div>
+
+        <div style="max-width: 810px;margin: auto;">
+            <h3>PARCELAMENTO DE BOLETO</h3>
+
+            <p style="font-size: 12px;">Como funciona?<br>
+                1º - Confira qual o limite disponível no seu cartão de crédito.<br>
+                2º - Escolha em quantas parcelas você quer pagar.<br>
+                3º - Compareça em nosso balcão de atendimento, com o seu cartão de crédito e pronto.<br>
+                Você pode parcelar os boletos do DETRAN (Inclusive multas), contas da CELPE e COMPESA, ou qualquer outro
+                boleto, em até 12 vezes e as parcelas caem direto na fatura do seu cartão.<br>
+                Faça já a sua simulação!</p>
+        </div>
+
+    </header>
+
     <div id="calc">
         <div class="boxCalc">
             <div>
                 <div class="containerValor">
-                    <p>Valor de Empréstimo  / Boleto(s) a Pagar:</p>
+                    <p>Valor de Empréstimo / Boleto(s) a Pagar:</p>
                     <span class="css-1hjwnhk-simple-currency-input__symbol-input__prefix">R$</span>
-                    <money v-model="valor" id="valor"  v-bind="money" placeholder="0,00" />
+                    <money v-model="valor" id="valor" v-bind="money" placeholder="0,00" />
                 </div>
                 <div class="containerValor">
                     <p>Escolha as parcelas:</p>
@@ -185,22 +264,71 @@
             </div>
             <div>
                 <p><b>VOCÊ PAGA:</b></p>
-                <p><span class="totalParcelamento">{{totalParcelamento.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</span><br>
-                Valor de entrada<br> A vista
-                    <span v-if="taxaTotal">{{ taxaTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</span>
+                <p><span class="totalParcelamento">{{totalParcelamento.toLocaleString('pt-br',{style: 'currency',
+                        currency: 'BRL'}) }}</span><br>
+                    Valor de entrada<br> A vista
+                    <span v-if="taxaTotal">{{ taxaTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+                        }}</span>
                     <span v-else>R$ 0,00</span>
-                    </p>
-                    <p>{{currency(2500)}}</p>
-                    
-                    <p>mais {{numeroParcela}}x de {{ parcelamento.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }} no cartão
+                </p>
+                <p>{{currency(2500)}}</p>
+
+                <p>mais {{numeroParcela}}x de {{ parcelamento.toLocaleString('pt-br',{style: 'currency', currency:
+                    'BRL'}) }} no cartão
                 </p>
             </div>
         </div>
     </div>
-      
+
+    <div class="btn-imprimir">
+        <button onclick="window.print()">IMPRIMIR</button>
+
+    </div>
+
+
+    <footer>
+
+        <div class="duvidas">
+
+            <h3>DÚVIDAS FREQUENTES</h3>
+
+            <p>
+                Quais tipos de boletos posso parcelar?<br>
+                Aceitamos todos os tipos de boletos.</p>
+
+            <p>Quais cartões são aceitos?<br>
+                Aceitamos os cartões Mastercard, Visa, Elo, Hipercard.</p>
+
+            <p>Posso pagar boletos vencidos?<br>
+                Sim.</p>
+
+            <p> Em quanto tempo os débitos são quitados?<br>
+                média, os débitos são quitados em até 24 horas, levando no máximo 48 horas úteis, conforme o prazo de
+                compensação do sistema bancário nacional.</p>
+
+            <p>Como faço os parcelamentos?<br>
+                Precisará comparecer pessoalmente em nosso balcão de atendimento.</p>
+
+            <p>É possivel cancelar um parcelamento já concluído?<br>
+                Não! Após completada uma transação não é possível efetuar o cancelamento.</p>
+
+            <p>Como fica o limite do meu cartão de crédito após um parcelamento?<br>
+                O parcelamento segue a mesma lógica de uma compra comum no crédito, o limite do cartão será ocupado até
+                o pagamento de todas as parcelas.</p>
+
+            <p>Como consigo os comprovantes de pagamento dos boletos parcelados?<br>
+                Os comprovantes de pagamento dos seus boletos são entregues no ato do parcelamento.</p>
+        </div>
+
+        <div class="col-md-5 container text-center" style=" text-align: center; padding: 15px; "><small>S.O.S Cidadão |
+                CNPJ 30.299.902/0001-31<br>Rua Capitão Pedrosa, 87 A. São Cristóvão - Santa Cruz do Capibaribe - PE /
+                CEP: 55.194-100 <br>Fone: (81) 3705-1313. Whatsapp: 81 9 9199-11-80. Dúvidas, sugestões e reclamações:
+                (81) 9 9153-6652.<br></small></div>
+
+    </footer>
     <script>
-        var _0xb9a4=["\x23\x63\x61\x6C\x63","\x2C","\x2E","","\x48\x65\x6C\x6C\x6F\x20\x57\x6F\x72\x6C\x64","\x70\x74\x2D\x42\x52","\x63\x75\x72\x72\x65\x6E\x63\x79","\x42\x52\x4C","\x66\x6F\x72\x6D\x61\x74","\x74\x61\x78\x61","\x6A\x75\x72\x6F\x73","\x31","\x32","\x33","\x34","\x35","\x36","\x37","\x38","\x39","\x31\x30","\x31\x31","\x31\x32","\x6E\x75\x6D\x65\x72\x6F\x50\x61\x72\x63\x65\x6C\x61","\x76\x61\x6C\x6F\x72","\x74\x6F\x74\x61\x6C\x50\x61\x72\x63\x65\x6C\x61\x6D\x65\x6E\x74\x6F","\x63\x61\x6C\x63\x54\x61\x78","\x6C\x6F\x67","\x74\x61\x78\x61\x54\x6F\x74\x61\x6C"]; new Vue({el:_0xb9a4[0],data:{valor:0,money:{decimal:_0xb9a4[1],thousands:_0xb9a4[2],prefix:_0xb9a4[3],suffix:_0xb9a4[3],precision:2,masked:false},texto:_0xb9a4[3],taxa:0.00,juros:[0.077,0.11380000000000001,0.1311,0.1489,0.1674,0.1864,0.2061,0.2265,0.2476,0.2696,0.2923,0.3159],numeroParcela:1,totalParcelamento:0.00,mensagem:_0xb9a4[4]},methods:{currency:function(_0x29fex1){var _0x29fex2= new Intl.NumberFormat(_0xb9a4[5],{style:_0xb9a4[6],currency:_0xb9a4[7]});_0x29fex2[_0xb9a4[8]](_0x29fex1)},calcTax:function(){switch(this[_0xb9a4[23]]){case _0xb9a4[11]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][0]);break;case _0xb9a4[12]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][1]);break;case _0xb9a4[13]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][2]);break;case _0xb9a4[14]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][3]);break;case _0xb9a4[15]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][4]);break;case _0xb9a4[16]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][5]);break;case _0xb9a4[17]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][6]);break;case _0xb9a4[18]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][7]);break;case _0xb9a4[19]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][8]);break;case _0xb9a4[20]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][9]);break;case _0xb9a4[21]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][10]);break;case _0xb9a4[22]:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][11]);break;default:this[_0xb9a4[9]]= parseFloat(this[_0xb9a4[10]][0]);break};(!this[_0xb9a4[24]]) && (this[_0xb9a4[24]]= 0.00) && (this[_0xb9a4[25]]= 0.00);this[_0xb9a4[25]]= parseFloat(this[_0xb9a4[24]])+ (parseFloat(this[_0xb9a4[24]])* parseFloat(this[_0xb9a4[9]]))}},watch:{numeroParcela:function(){this[_0xb9a4[26]]();console[_0xb9a4[27]](this[_0xb9a4[25]])},valor:function(){this[_0xb9a4[26]]();console[_0xb9a4[27]](this[_0xb9a4[24]])}},computed:{taxaTotal:function(){return parseFloat(this[_0xb9a4[24]])* parseFloat(this[_0xb9a4[9]])},parcelamento:function(){return ((parseFloat(this[_0xb9a4[25]])- parseFloat(this[_0xb9a4[28]]))/ parseFloat(this[_0xb9a4[23]]))},total:function(){return 10}}})
+        var _0xb9a4 = ["\x23\x63\x61\x6C\x63", "\x2C", "\x2E", "", "\x48\x65\x6C\x6C\x6F\x20\x57\x6F\x72\x6C\x64", "\x70\x74\x2D\x42\x52", "\x63\x75\x72\x72\x65\x6E\x63\x79", "\x42\x52\x4C", "\x66\x6F\x72\x6D\x61\x74", "\x74\x61\x78\x61", "\x6A\x75\x72\x6F\x73", "\x31", "\x32", "\x33", "\x34", "\x35", "\x36", "\x37", "\x38", "\x39", "\x31\x30", "\x31\x31", "\x31\x32", "\x6E\x75\x6D\x65\x72\x6F\x50\x61\x72\x63\x65\x6C\x61", "\x76\x61\x6C\x6F\x72", "\x74\x6F\x74\x61\x6C\x50\x61\x72\x63\x65\x6C\x61\x6D\x65\x6E\x74\x6F", "\x63\x61\x6C\x63\x54\x61\x78", "\x6C\x6F\x67", "\x74\x61\x78\x61\x54\x6F\x74\x61\x6C"]; new Vue({ el: _0xb9a4[0], data: { valor: 0, money: { decimal: _0xb9a4[1], thousands: _0xb9a4[2], prefix: _0xb9a4[3], suffix: _0xb9a4[3], precision: 2, masked: false }, texto: _0xb9a4[3], taxa: 0.00, juros: [0.077, 0.11380000000000001, 0.1311, 0.1489, 0.1674, 0.1864, 0.2061, 0.2265, 0.2476, 0.2696, 0.2923, 0.3159], numeroParcela: 1, totalParcelamento: 0.00, mensagem: _0xb9a4[4] }, methods: { currency: function (_0x29fex1) { var _0x29fex2 = new Intl.NumberFormat(_0xb9a4[5], { style: _0xb9a4[6], currency: _0xb9a4[7] }); _0x29fex2[_0xb9a4[8]](_0x29fex1) }, calcTax: function () { switch (this[_0xb9a4[23]]) { case _0xb9a4[11]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][0]); break; case _0xb9a4[12]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][1]); break; case _0xb9a4[13]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][2]); break; case _0xb9a4[14]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][3]); break; case _0xb9a4[15]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][4]); break; case _0xb9a4[16]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][5]); break; case _0xb9a4[17]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][6]); break; case _0xb9a4[18]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][7]); break; case _0xb9a4[19]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][8]); break; case _0xb9a4[20]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][9]); break; case _0xb9a4[21]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][10]); break; case _0xb9a4[22]: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][11]); break; default: this[_0xb9a4[9]] = parseFloat(this[_0xb9a4[10]][0]); break }; (!this[_0xb9a4[24]]) && (this[_0xb9a4[24]] = 0.00) && (this[_0xb9a4[25]] = 0.00); this[_0xb9a4[25]] = parseFloat(this[_0xb9a4[24]]) + (parseFloat(this[_0xb9a4[24]]) * parseFloat(this[_0xb9a4[9]])) } }, watch: { numeroParcela: function () { this[_0xb9a4[26]](); console[_0xb9a4[27]](this[_0xb9a4[25]]) }, valor: function () { this[_0xb9a4[26]](); console[_0xb9a4[27]](this[_0xb9a4[24]]) } }, computed: { taxaTotal: function () { return parseFloat(this[_0xb9a4[24]]) * parseFloat(this[_0xb9a4[9]]) }, parcelamento: function () { return ((parseFloat(this[_0xb9a4[25]]) - parseFloat(this[_0xb9a4[28]])) / parseFloat(this[_0xb9a4[23]])) }, total: function () { return 10 } } })
     </script>
 </body>
-</html>
 
+</html>
